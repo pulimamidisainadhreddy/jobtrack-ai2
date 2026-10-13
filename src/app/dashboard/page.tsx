@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, Legend } from 'recharts'
 
 type AppItem = {
   id: string
@@ -36,7 +36,6 @@ export default function Dashboard(){
   }
   useEffect(()=>{ fetchApps() }, [])
 
-  // Stats like screenshot
   const total = apps.length
   const submitted = apps.filter(a=>a.status==='Applied').length
   const inReview = apps.filter(a=>a.status==='Saved').length
@@ -97,34 +96,31 @@ export default function Dashboard(){
 
   return (
     <div className="layout">
-      {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-icon">J</div>
           <div><div style={{fontWeight:800, fontSize:'14px'}}>JobTrack AI</div><div style={{fontSize:'10px', color:'#64748b', letterSpacing:'1px'}}>BERLIN - PRIVATE</div></div>
         </div>
         <nav className="nav">
-          <div className="nav-item active">📊 Dashboard</div>
-          <div className="nav-item" onClick={()=>document.getElementById('apps-table')?.scrollIntoView()}>📁 My Applications</div>
-          <div className="nav-item">💼 Job Opportunities</div>
-          <div className="nav-item">🤖 AI Job Analyzer</div>
-          <div className="nav-item">📄 Resume Analyzer</div>
-          <div className="nav-item">✉️ Cover Letter Generator</div>
-          <div className="nav-item">🎤 Interviews</div>
-          <div className="nav-item">🧠 AI Interview Prep</div>
-          <div className="nav-item">📅 Calendar</div>
-          <div className="nav-item">⏰ Follow-Ups <span className="nav-badge">8</span></div>
-          <div className="nav-item">👥 Recruiter Contacts</div>
-          <div className="nav-item">📂 Documents</div>
-          <div className="nav-item">✅ Tasks Planner</div>
+          <div className="nav-item active">Dashboard</div>
+          <div className="nav-item" onClick={()=>document.getElementById('apps-table')?.scrollIntoView()}>My Applications</div>
+          <div className="nav-item">Job Opportunities</div>
+          <div className="nav-item">AI Job Analyzer</div>
+          <div className="nav-item">Resume Analyzer</div>
+          <div className="nav-item">Cover Letter Generator</div>
+          <div className="nav-item">Interviews</div>
+          <div className="nav-item">AI Interview Prep</div>
+          <div className="nav-item">Calendar</div>
+          <div className="nav-item">Follow-Ups <span className="nav-badge">8</span></div>
+          <div className="nav-item">Recruiter Contacts</div>
+          <div className="nav-item">Documents</div>
+          <div className="nav-item">Tasks Planner</div>
           <div style={{marginTop:'20px', padding:'12px', background:'#f8fafc', borderRadius:'8px', border:'1px solid #e5e7eb'}}>
             <div style={{fontSize:'12px', fontWeight:600}}>pulimamidisainath...</div>
             <div style={{fontSize:'11px', color:'#64748b'}}>MSc Data Science</div>
           </div>
         </nav>
       </aside>
-
-      {/* MAIN */}
       <main className="main">
         <div className="topbar">
           <div className="search">
@@ -136,14 +132,11 @@ export default function Dashboard(){
             <button className="btn" onClick={()=>setShowAdd(true)}>+ Quick Add</button>
           </div>
         </div>
-
         <div className="content">
           <div className="greeting">
             <h1>Good evening, Sainath — Ready to land your Data Engineer role in Berlin?</h1>
             <p>You have {followUps} follow-ups due and {interviews} upcoming interviews. Daily target: 5 applications. {loading ? 'Loading...' : `${total} total in Neon DB`}</p>
           </div>
-
-          {/* STATS ROW 1 - Like screenshot */}
           <div className="stats-grid">
             <div className="stat-card"><div className="stat-label">Total Applications</div><div className="stat-value">{total || 6}</div><div className="stat-sub">All time</div></div>
             <div className="stat-card"><div className="stat-label">Submitted</div><div className="stat-value">{submitted || 2}</div><div className="stat-sub">Applied + Review</div></div>
@@ -153,7 +146,6 @@ export default function Dashboard(){
             <div className="stat-card"><div className="stat-label">Offers</div><div className="stat-value">{offers || 0}</div><div className="stat-sub">Received</div></div>
             <div className="stat-card"><div className="stat-label">Rejected</div><div className="stat-value">{rejected || 1}</div><div className="stat-sub">Closed</div></div>
           </div>
-
           <div className="stats-grid" style={{marginTop:'12px'}}>
             <div className="stat-card"><div className="stat-label">No Response</div><div className="stat-value">{noResponse}</div><div className="stat-sub">Waiting</div></div>
             <div className="stat-card"><div className="stat-label">Follow-Ups Due</div><div className="stat-value">{followUps || 5}</div><div className="stat-sub">Action needed</div></div>
@@ -163,8 +155,6 @@ export default function Dashboard(){
             <div className="stat-card"><div className="stat-label">Interview Conv</div><div className="stat-value">{interviewConv || 50}%</div><div className="stat-sub">Interview / Applied</div></div>
             <div className="stat-card"><div className="stat-label">Offer Conv</div><div className="stat-value">{offerConv || 0}%</div><div className="stat-sub">Offer / Interview</div></div>
           </div>
-
-          {/* CHARTS - Like screenshot */}
           <div className="charts-grid">
             <div className="chart-card">
               <div className="chart-title"><span>Applications by Status</span><span style={{fontSize:'11px', color:'#10b981'}}>Live</span></div>
@@ -185,8 +175,6 @@ export default function Dashboard(){
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* APPLICATIONS TABLE */}
           <div className="table-card" id="apps-table">
             <div style={{padding:'16px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
               <h3 style={{fontSize:'14px', fontWeight:700}}>My Applications — {filtered.length} jobs (Neon Persistent)</h3>
@@ -215,8 +203,6 @@ export default function Dashboard(){
           </div>
         </div>
       </main>
-
-      {/* ADD MODAL */}
       {showAdd && (
         <div className="modal-overlay" onClick={()=>setShowAdd(false)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
