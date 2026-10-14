@@ -1,98 +1,131 @@
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
+
 generator client {
   provider = "prisma-client-js"
 }
+
+// Existing models are retained so current Neon records are not thrown away.
 model User {
-  id String @id @default(cuid())
-  email String @unique
-  passwordHash String @default("temp")
-  name String? @default("Sainath")
-  education String? @default("MSc Data Science")
-  location String? @default("Berlin, Germany")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String         @default("temp")
+  name         String?        @default("Sainath")
+  education    String?        @default("MSc Data Science")
+  location     String?        @default("Berlin, Germany")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   applications Application[]
-  interviews Interview[]
-  contacts Contact[]
-  documents Document[]
-  tasks Task[]
-  cvVersions CvVersion[]
+  interviews   Interview[]
+  contacts     Contact[]
+  documents    Document[]
+  tasks        Task[]
+  cvVersions   CvVersion[]
   coverLetters CoverLetter[]
+  goals        GoalSettings?
 }
+
 model Application {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  companyName String
-  jobTitle String
-  jobDescription String? @db.Text
-  jobUrl String?
-  jobLocation String @default("Berlin")
-  status String @default("Saved")
-  platform String @default("LinkedIn")
-  notes String? @db.Text
-  matchScore Int?
-  applicationDate DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName      String
+  jobTitle         String
+  jobDescription   String?  @db.Text
+  jobUrl           String?
+  jobLocation      String   @default("Berlin")
+  status           String   @default("Saved")
+  platform         String   @default("LinkedIn")
+  notes            String?  @db.Text
+  matchScore       Int?
+  applicationDate  DateTime @default(now())
+  salaryMin        Int?
+  salaryMax        Int?
+  workArrangement  String?
+  germanLevel      String?
+  recruiterName    String?
+  recruiterContact String?
+  cvVersion        String?
+  followUpDate     DateTime?
+  interviewDates   DateTime[] @default([])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
   @@index([userId, status])
+  @@index([userId, applicationDate])
 }
+
+model GoalSettings {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications   Int      @default(20)
+  interviews     Int      @default(2)
+  networking     Int      @default(5)
+  followups      Int      @default(3)
+  preparation    Int      @default(4)
+  networkingDone Int      @default(0)
+  followupsDone  Int      @default(0)
+  prepDone       Int      @default(0)
+  weekStart      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 model Interview {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  company String
-  jobTitle String
-  date DateTime
-  timezone String? @default("Europe/Berlin")
-  result String?
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   String
+  jobTitle  String
+  date      DateTime
+  timezone  String?  @default("Europe/Berlin")
+  result    String?
   createdAt DateTime @default(now())
 }
 model Contact {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  name String
-  company String?
-  email String?
-  linkedIn String?
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  company   String?
+  email     String?
+  linkedIn  String?
   createdAt DateTime @default(now())
 }
 model Document {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  name String
-  type String
-  fileUrl String
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  type      String
+  fileUrl   String
   createdAt DateTime @default(now())
 }
 model CvVersion {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  name String
-  content String? @db.Text
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  content   String?  @db.Text
   createdAt DateTime @default(now())
 }
 model CoverLetter {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  name String
-  content String @db.Text
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  content   String   @db.Text
   createdAt DateTime @default(now())
 }
 model Task {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
-  title String
-  type String @default("Follow-up")
-  completed Boolean @default(false)
-  dueDate DateTime?
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  type      String   @default("Follow-up")
+  completed Boolean  @default(false)
+  dueDate   DateTime?
   createdAt DateTime @default(now())
 }
